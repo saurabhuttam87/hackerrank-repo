@@ -1,0 +1,47 @@
+#include <iostream>
+#include <queue>
+#include <vector>
+#include <iomanip>
+using namespace std;
+
+void addNumber(int number, priority_queue<int>& lower, priority_queue<int, vector<int>, greater<int>>& higher) {
+    if (lower.empty() || number < lower.top()) {
+        lower.push(number);
+    } else {
+        higher.push(number);
+    }
+
+    // Balance the heaps
+    if (lower.size() > higher.size() + 1) {
+        higher.push(lower.top());
+        lower.pop();
+    } else if (higher.size() > lower.size()) {
+        lower.push(higher.top());
+        higher.pop();
+    }
+}
+
+double getMedian(priority_queue<int>& lower, priority_queue<int, vector<int>, greater<int>>& higher) {
+    if (lower.size() == higher.size()) {
+        return (lower.top() + higher.top()) / 2.0;
+    } else {
+        return lower.top();
+    }
+}
+
+int main() {
+    int n;
+    cin >> n;
+    
+    priority_queue<int> lower; // Max-heap
+    priority_queue<int, vector<int>, greater<int>> higher; // Min-heap
+
+    for (int i = 0; i < n; ++i) {
+        int number;
+        cin >> number;
+        addNumber(number, lower, higher);
+        cout << fixed << setprecision(1) << getMedian(lower, higher) << endl;
+    }
+
+    return 0;
+}
